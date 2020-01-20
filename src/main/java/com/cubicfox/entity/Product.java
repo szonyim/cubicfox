@@ -1,7 +1,9 @@
 package com.cubicfox.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.tuple.entity.EntityMetamodel;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -27,6 +29,11 @@ public class Product implements Serializable {
 
     @Column(nullable = false)
     public float price;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    public User user;
 
     public Long getId() {
         return Id;
