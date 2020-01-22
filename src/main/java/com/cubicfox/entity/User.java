@@ -10,13 +10,14 @@ import java.util.Collection;
 @Table(name = "users")
 public class User implements Serializable {
 
-    @javax.persistence.Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
 
     @Column(unique = true)
     public String username;
 
+    @Column(nullable = false)
     public String password;
 
     @OneToMany(targetEntity = Product.class)
