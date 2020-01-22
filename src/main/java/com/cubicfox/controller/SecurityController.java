@@ -34,10 +34,11 @@ public class SecurityController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) throws Exception
+    {
+        authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new LoginResponse(token));
