@@ -1,19 +1,16 @@
 package com.cubicfox.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 public class WelcomeController {
 
     @GetMapping("/")
-    public ResponseEntity<String> HelloWorld()
+    public ResponseEntity<String> HelloSpring()
     {
-        return ResponseEntity.ok("Hello Spring :D");
-
+        return ResponseEntity.ok("Hello Spring :)");
     }
 
 }

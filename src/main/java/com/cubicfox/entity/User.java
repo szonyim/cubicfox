@@ -1,11 +1,13 @@
 package com.cubicfox.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 
-
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
@@ -20,8 +22,21 @@ public class User implements Serializable {
     @Column(nullable = false)
     public String password;
 
-    @OneToMany(targetEntity = Product.class)
+    @JsonBackReference
+    @OneToMany(targetEntity = Product.class, mappedBy = "user")
     public Collection<Product> products;
+
+    @JsonBackReference
+    @OneToMany(targetEntity = Rate.class, mappedBy = "user")
+    public Collection<Rate> rates;
+
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public Long getId() {
         return id;
@@ -53,5 +68,13 @@ public class User implements Serializable {
 
     public void setProducts(Collection<Product> products) {
         this.products = products;
+    }
+
+    public Collection<Rate> getRates() {
+        return rates;
+    }
+
+    public void setRates(Collection<Rate> rates) {
+        this.rates = rates;
     }
 }
