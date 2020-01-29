@@ -1,18 +1,14 @@
 package com.cubicfox.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
 
@@ -24,7 +20,7 @@ public class Product implements Serializable {
 
     @Id()
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long Id;
+    public Long id;
 
     @Min(100000)
     @Max(999999)
@@ -45,12 +41,11 @@ public class Product implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     public User user;
 
-    @JsonBackReference
     @OneToMany(targetEntity = Rate.class, mappedBy = "product")
     public Collection<Rate> rates;
 
     @Transient
-    public Float avgRate; // = Product.avgRateFunc.apply(this.getRates());
+    public Float avgRate;
 
     @Transient
     static Function<Collection<Rate>, Float> avgRateFunc = (Function<Collection<Rate>, Float> & Serializable) rates -> {
@@ -71,6 +66,7 @@ public class Product implements Serializable {
         avgRate = Product.avgRateFunc.apply(this.getRates());
     }
 
+    //<editor-fold desc="Constructors">
     public Product() {
     }
 
@@ -81,13 +77,15 @@ public class Product implements Serializable {
         this.price = price;
         this.user = user;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Getter / Setter">
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        id = id;
     }
 
     public int getCode() {
@@ -141,4 +139,5 @@ public class Product implements Serializable {
     public void setRates(Collection<Rate> rates) {
         this.rates = rates;
     }
+    //</editor-fold>
 }

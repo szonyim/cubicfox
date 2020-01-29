@@ -1,6 +1,7 @@
 package com.cubicfox.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -19,7 +20,11 @@ public class User implements Serializable {
     @Column(unique = true)
     public String username;
 
+    /**
+     * Excluded from json serialization
+     */
     @Column(nullable = false)
+    @JsonIgnore
     public String password;
 
     @Column(nullable = false)
