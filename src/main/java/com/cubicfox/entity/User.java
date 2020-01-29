@@ -22,6 +22,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     public String password;
 
+    @Column(nullable = false)
+    public String email;
+
     @JsonBackReference
     @OneToMany(targetEntity = Product.class, mappedBy = "user")
     public Collection<Product> products;
@@ -33,9 +36,10 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     public Long getId() {
@@ -76,5 +80,13 @@ public class User implements Serializable {
 
     public void setRates(Collection<Rate> rates) {
         this.rates = rates;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

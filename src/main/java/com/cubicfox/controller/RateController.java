@@ -3,21 +3,23 @@ package com.cubicfox.controller;
 import com.cubicfox.entity.Product;
 import com.cubicfox.entity.Rate;
 import com.cubicfox.entity.User;
-import com.cubicfox.exception.RateException;
 import com.cubicfox.exception.ResourceNotFoundException;
 import com.cubicfox.model.RateRequest;
 import com.cubicfox.repository.ProductRepository;
 import com.cubicfox.service.ProductService;
 import com.cubicfox.service.RateService;
 import com.cubicfox.service.UserService;
-import org.hibernate.exception.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
+
 
 @RestController
 @CrossOrigin
@@ -38,14 +40,13 @@ public class RateController {
 
         Product product = productService.getProduct(productId);
 
-        if(product == null)
+        if (product == null)
             throw new ResourceNotFoundException("Resource not found");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
         User user = userService.getUser(currentPrincipalName);
-
         Rate rate = new Rate(rateValue, user, product);
 
 
@@ -55,11 +56,14 @@ public class RateController {
         return ResponseEntity.ok(rate);
     }
 
-    @ExceptionHandler
-    public void handle(ConstraintViolationException exception) {
-        //you will get all javax failed validation, can be more than one
-        //so you can return the set of error messages or just the first message
-        int a = 0;
+
+    @ExceptionHandler(org.hibernate.exception.ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolation1(org.hibernate.exception.ConstraintViolationException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolation2(javax.validation.ConstraintViolationException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
