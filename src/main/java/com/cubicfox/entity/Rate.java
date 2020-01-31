@@ -18,8 +18,8 @@ public class Rate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
 
-    @Min(1)
-    @Max(10)
+    @Min(value = 1, message = "Rate value must be greater than 0!")
+    @Max(value = 10, message = "Rate value must be smaller than 10!")
     public byte rateValue;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,7 +38,7 @@ public class Rate {
     }
 
     public Rate(byte rateValue, User user, Product product) {
-        rateValue = rateValue;
+        this.rateValue = rateValue;
         this.user = user;
         this.product = product;
     }

@@ -12,11 +12,6 @@ public class RateService {
     private RateRepository rateRepository;
 
     public Rate addRate(Rate rate){
-
-        try {
-            return rateRepository.save(rate);
-        }catch (Exception e){
-            throw e;
-        }
+        return rateRepository.save(rate);
     }
 }

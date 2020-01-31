@@ -33,16 +33,15 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        User user = null;
-        if(userRepository.existsUserByUsername("admin") == false)
-        {
+        User user;
+        if(userRepository.existsUserByUsername("admin") == false) {
             user = new User("admin", passwordEncoder.encode("Secret123"), "admin@cubicfox.hu");
             userRepository.saveAndFlush(user);
         }  else {
             user = userRepository.findByUsername("admin");
         }
 
-
+        // Add test products
         if(productRepository.count() == 0) {
             ArrayList<Product> demoProducts = new ArrayList<>();
             for (int i = 100000; i <= 100105; i++) {

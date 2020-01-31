@@ -1,11 +1,13 @@
 package com.cubicfox.controller;
 
 import com.cubicfox.entity.Product;
+import com.cubicfox.model.ProductUpdateRequest;
 import com.cubicfox.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +33,7 @@ public class ProductController {
 
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 
-        Page<Product> productList = null;
+        Page<Product> productList;
         if(filter != null && !"".equals(filter)) {
             productList = productRepository.findAllByNameContainsOrDescriptionContains(filter, filter, pageable);
         }else{
@@ -58,8 +60,28 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{productId}", name = "update-product")
-    public ResponseEntity<Product> updateProduct(@PathVariable("productId") long id, @RequestBody Product product){
-        return null;
+    public ResponseEntity<?> updateProduct(@PathVariable("productId") long id, @RequestBody ProductUpdateRequest productUpdates)
+    {
+        Optional<Product> queryResult = productRepository.findById(id);
+
+        if( ! queryResult.isPresent())
+            return new ResponseEntity<>("Product not found!", HttpStatus.BAD_REQUEST);
+
+        try {
+            Product product = queryResult.get();
+            product.setCode(productUpdates.getCode());
+            product.setName(productUpdates.getName());
+            product.setDescription(productUpdates.getDescription());
+            product.setPrice(productUpdates.getPrice());
+
+            productRepository.save(product);
+
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return ResponseEntity.noContent().build();
+
     }
 
 }
